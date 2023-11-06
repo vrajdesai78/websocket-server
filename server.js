@@ -1,10 +1,14 @@
 const express = require('express');
 const http = require('http');
-const WebSocket = require('ws');
+const WebSocket = require('ws'); 
+require('dotenv').config();
 
-const port = 6969;
 const server = http.createServer(express);
-const wss = new WebSocket.Server({ server })
+const wss = new WebSocket.Server({ server });
+const app = express();
+
+// port
+const PORT = process.env.PORT || 10000;
 
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(data) {
@@ -16,6 +20,10 @@ wss.on('connection', function connection(ws) {
   })
 })
 
-server.listen(port, function() {
-  console.log(`Server is listening on ${port}!`)
+app.get('/', function(res) {
+  res.status(200).send('OK');
+});
+
+const httpServer = app.listen(PORT, function() {
+  console.log(`Server is listening on ${PORT}!`)
 })
