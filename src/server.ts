@@ -1,11 +1,14 @@
 // Import required modules
-const express = require('express');
-const http = require('http');
-const WebSocket = require('ws');
-require('dotenv').config();
+import express from 'express';
+import http from 'http';
+import WebSocket from 'ws';
+import dotenv from 'dotenv';
 
 // Create an Express app
 const app = express();
+
+// Load environment variables from .env file
+dotenv.config();
 
 // Create an HTTP server using the Express app
 const server = http.createServer(app);
