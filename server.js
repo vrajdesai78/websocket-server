@@ -1,29 +1,48 @@
+// Import required modules
 const express = require('express');
 const http = require('http');
-const WebSocket = require('ws'); 
+const WebSocket = require('ws');
 require('dotenv').config();
 
-const server = http.createServer(express);
-const wss = new WebSocket.Server({ server });
+// Create an Express app
 const app = express();
 
-// port
+// Create an HTTP server using the Express app
+const server = http.createServer(app);
+
+// Create a WebSocket server on the same server
+const wss = new WebSocket.Server({ server });
+
+// PORT
 const PORT = process.env.PORT || 10000;
 
-wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(data) {
-    wss.clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(data);
-      }
-    })
-  })
-})
+// WebSocket server event handlers
+wss.on('connection', (ws) => {
+  console.log('Client connected');
 
-app.get('/', function(req, res) {
-  res.status(200).send('OK');
+  // WebSocket message event handler
+  ws.on('message', (message) => {
+    // Broadcast the message to all connected clients
+    wss.clients.forEach((client) => {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+  });
+
+  // WebSocket close event handler
+  ws.on('close', () => {
+    console.log('Client disconnected');
+  });
 });
 
-const httpServer = app.listen(PORT, function() {
-  console.log(`Server is listening on ${PORT}!`)
-})
+// Serve a simple HTML file for testing
+app.get('/', (req, res) => {
+  // send ok status
+  res.status(200).send('ok');
+});
+
+// Start the HTTP server on port 3000
+server.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
+});
