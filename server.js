@@ -20,7 +20,7 @@ wss.on('connection', function connection(ws) {
   })
 })
 
-app.get('/', function(res) {
+app.get('/', function(req, res) {
   res.status(200).send('OK');
 });
 
